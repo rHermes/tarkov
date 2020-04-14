@@ -298,6 +298,34 @@ impl Tarkov {
         handle_error(res.error, res.data)
     }
 
+    /// Get list of price trader is willing to pay for in users inventory
+    pub async fn get_trader_prices(&self, trader_id: &str) -> Result<HashMap<String, Price>> {
+        if trader_id.is_empty() {
+            return Err(Error::InvalidParameters);
+        }
+
+        let mut result: HashMap<String, Price> = HashMap::new();
+
+        let mut prices = self.get_trader_prices_raw(trader_id).await?;
+
+        for (id, price_w) in prices.drain() {
+            if price_w.len() != 1 {
+                panic!("The price structure top is wrong");
+            }
+            let ww = price_w.get(0).unwrap();
+            if ww.len() != 1 {
+                panic!("The price structure is wrong!");
+            }
+            let pw = ww.get(0).unwrap();
+
+            if result.insert(id, pw.clone()).is_some() {
+                panic!("We found it double!");
+            }
+        }
+
+        Ok(result)
+    }
+
     /// Get a list of items for sale by trader ID.
     pub async fn get_trader_items(&self, trader_id: &str) -> Result<Vec<TraderItem>> {
         if trader_id.is_empty() {
