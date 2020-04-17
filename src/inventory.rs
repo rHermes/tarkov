@@ -96,6 +96,8 @@ pub struct Upd {
     pub key: Option<UpdKey>,
     /// Tag info
     pub tag: Option<UpdTag>,
+    /// Fuel info
+    pub resource: Option<UpdResource>,
 }
 
 /// Medkit item info
@@ -142,6 +144,14 @@ pub struct UpdTag {
     pub color: u64,
     /// Name
     pub name: String,
+}
+
+/// Fuel info
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
+#[serde(rename_all = "PascalCase")]
+pub struct UpdResource {
+    /// Value
+    pub value: f64,
 }
 
 /// Inventory item for trading.
